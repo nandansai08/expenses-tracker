@@ -1,0 +1,13 @@
+{
+  "name": "bloombudget-expenses-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static BloomBudget app build config for Azure Oryx",
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "build:azure": "npm run build"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
