@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BloomBudget — Expenses Tracker</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="background-glow"></div>
+
+    <main id="authShell" class="auth-shell">
+      <section class="auth-card glass">
+        <p class="eyebrow">Secure login</p>
+        <h1>Sign in to BloomBudget</h1>
+        <p class="subtle">Choose your provider, verify OTP from your email, and continue securely.</p>
+
+        <div class="provider-row">
+          <button id="googleBtn" class="button ghost provider-btn active" type="button" data-provider="Google">
+            Continue with Google
+          </button>
+          <button id="appleBtn" class="button ghost provider-btn" type="button" data-provider="Apple">
+            Continue with Apple ID
+          </button>
+        </div>
+
+        <form id="authForm" class="auth-form" novalidate>
+          <label>
+            Email
+            <input id="email" name="email" type="email" placeholder="you@example.com" required />
+          </label>
+          <button class="button primary" type="submit">Send OTP</button>
+          <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+        </form>
+
+        <form id="otpForm" class="auth-form hidden" novalidate>
+          <label>
+            Enter 6-digit OTP
+            <input id="otp" name="otp" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="123456" required />
+          </label>
+          <div class="otp-actions">
+            <button class="button primary" type="submit">Verify OTP</button>
+            <button id="resendOtp" class="button ghost" type="button">Resend OTP</button>
+          </div>
+          <p id="otpMessage" class="auth-message" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <main id="appShell" class="app-shell hidden">
+      <header class="app-header glass">
+        <div>
+          <p class="eyebrow">Personal finance companion</p>
+          <h1>BloomBudget</h1>
+          <p id="sessionMeta" class="subtle"></p>
+        </div>
+        <div class="header-actions">
+          <button id="exportButton" class="button ghost" type="button">Export CSV</button>
+          <button id="logoutButton" class="button danger" type="button">Sign out</button>
+        </div>
+      </header>
+
+      <section class="stats-grid">
+        <article class="card stat glass">
+          <h2>Total Spent</h2>
+          <p id="totalSpent" class="stat-value">$0.00</p>
+        </article>
+        <article class="card stat glass">
+          <h2>This Month</h2>
+          <p id="monthSpent" class="stat-value">$0.00</p>
+        </article>
+        <article class="card stat glass">
+          <h2>Average / Day</h2>
+          <p id="dailyAverage" class="stat-value">$0.00</p>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="card glass form-card">
+          <h2>Add expense</h2>
+          <form id="expenseForm" novalidate>
+            <label>
+              Title
+              <input id="title" name="title" type="text" placeholder="Groceries" required maxlength="70" />
+            </label>
+            <label>
+              Amount (₹)
+              <input id="amount" name="amount" type="number" min="0.01" step="0.01" placeholder="420.50" required />
+            </label>
+            <label>
+              Category
+              <select id="category" name="category" required>
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Health">Health</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
+            <label>
+              Date
+              <input id="date" name="date" type="date" required />
+            </label>
+            <label>
+              Notes
+              <textarea id="notes" name="notes" maxlength="220" rows="3" placeholder="Optional details"></textarea>
+            </label>
+            <button class="button primary" type="submit">Save Expense</button>
+            <p id="formMessage" role="status" aria-live="polite"></p>
+          </form>
+        </article>
+
+        <article class="card glass list-card">
+          <div class="list-head">
+            <h2>Recent expenses</h2>
+            <label class="filter-inline">
+              Filter
+              <select id="filterCategory" aria-label="Filter expenses by category">
+                <option value="All">All</option>
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Health">Health</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
+          </div>
+          <ul id="expenseList" class="expense-list"></ul>
+          <p id="emptyState" class="empty-state">No expenses yet. Add your first one ✨</p>
+        </article>
+
+        <article class="card glass chart-card">
+          <h2>Category breakdown</h2>
+          <canvas id="categoryChart" width="460" height="300" aria-label="Category chart"></canvas>
+          <ul id="legend" class="legend"></ul>
+        </article>
+      </section>
+    </main>
+
+    <template id="expenseItemTemplate">
+      <li class="expense-item">
+        <div class="expense-main">
+          <h3 class="expense-title"></h3>
+          <p class="expense-meta"></p>
+          <p class="expense-notes"></p>
+        </div>
+        <div class="expense-side">
+          <p class="expense-amount"></p>
+          <button class="button danger delete-btn" type="button">Delete</button>
+        </div>
+      </li>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
